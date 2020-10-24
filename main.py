@@ -3,7 +3,6 @@ The main file of the project
 """
 # Import section
 from code_project.functions import *
-import os
 
 if __name__ == "__main__":
     # read all files from input folder
@@ -15,7 +14,7 @@ if __name__ == "__main__":
             css_files.append(file)
 
     if len(css_files) == 0:
-        css_files = None
+        css_files = []
     else:
         print("Fichiers CSS detectés !")
 

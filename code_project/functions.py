@@ -30,10 +30,7 @@ def md_to_html(source, target, css=None):
             encoding='utf8'
         )
         # add footer and header
-        if css is None:
-            add_header_and_footer(target)
-        else:
-            pass
+        add_header_and_footer(target, css)
     else:
         print("le fichier {} n'est un fichier Markdown, il ne va pas être converti !".format(src))
         copyfile(src, "{}{}".format(name, ex).replace('input', 'output'))
@@ -81,7 +78,7 @@ def get_all_files(path_src):
     return list_of_files
 
 
-def add_header_and_footer(src):
+def add_header_and_footer(src, css=None):
     """
     this function add the header to HTML file
     :return: the new HTML file with header
@@ -91,7 +88,10 @@ def add_header_and_footer(src):
         content = get_content(src)
         header, footer = get_header_and_footer()
         html = open(src, 'r+')
-        html.write(header + "\n" + content + "\n" + footer)
+        if css is None:
+            html.write(header + "\n" + content + "\n" + footer)
+        else:
+            html.write(header.replace("<span></span>", add_css_code(css)) + "\n" + content + "\n" + footer)
         html.close()
     except FileNotFoundError:
         print("Le fichier {} n'existe pas ou endomagé !".format(src))
@@ -109,14 +109,6 @@ def get_header_and_footer():
     with open('code_project/assets/footer.html') as feet_file:
         footer = feet_file.read()
     return header, footer
-
-
-def add_css():
-    """
-    this function add CSS files to all HTML files
-    :return:
-    """
-    pass
 
 
 def get_content(src):
@@ -158,5 +150,10 @@ def add_css_code(lise):
     :param lise: input list of files
     :return: code to add
     """
-    pass
+    css_balise = "<link rel=\"stylesheet\" href=\"{}\">\n"
+    code = ""
+    for el in lise:
+        css_file = el.replace('input', '').replace('\\', '/')
+        code += css_balise.format(css_file)
 
+    return code
